@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "name": "Stock",
+  "fields": [
+    {"name": "event_time", "type": "string"},
+    {"name": "ticker", "type": "string"},
+    {"name": "price", "type": "float"}
+  ]
+}
