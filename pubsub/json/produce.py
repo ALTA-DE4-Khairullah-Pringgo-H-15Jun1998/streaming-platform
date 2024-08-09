@@ -8,7 +8,7 @@ from config import TOPIC
 def produce():
     # Configure the Producer
     p = Producer({
-        'bootstrap.servers': 'localhost:19092',  # Assuming you're running this on the same machine as the compose
+        'bootstrap.servers': '34.101.224.54:19092',  # Assuming you're running this on the same machine as the compose
         'client.id': 'python-producer'
     })
 
