@@ -1,38 +1,17 @@
-from confluent_kafka import Consumer
+from confluent_kafka.avro import AvroConsumer
 import avro.schema
-import avro.io
-import io
 
-# Definisikan schema Avro (harus sama dengan yang digunakan pada producer)
-schema_str = """
-{
-    "namespace": "Task",
-    "type": "record",
-    "name": "Stock",
-    "fields": [
-        {"name": "event_time", "type": "string"},
-        {"name": "ticker", "type": "string"},
-        {"name": "price", "type": "float"}
-    ]
-}
-"""
-schema = avro.schema.parse(schema_str)
-
-# Fungsi untuk melakukan deserialization data dari format Avro
-def deserialize_avro(data, schema):
-    bytes_reader = io.BytesIO(data)
-    decoder = avro.io.BinaryDecoder(bytes_reader)
-    reader = avro.io.DatumReader(schema)
-    return reader.read(decoder)
-
-# Konfigurasi consumer
-consumer = Consumer({
+# Konfigurasi consumer dengan Schema Registry
+config = {
     'bootstrap.servers': '34.101.224.54:19092',
+    'schema.registry.url': 'http://34.101.224.54:18081',
     'group.id': 'python-consumer',
     'auto.offset.reset': 'earliest'
-})
+}
 
-consumer.subscribe(['stock_avro_topic'])
+# Inisialisasi AvroConsumer
+consumer = AvroConsumer(config)
+consumer.subscribe(['Task1_Avro_Khairullah'])
 
 # Konsumsi data
 while True:
@@ -43,7 +22,6 @@ while True:
         print(f"Error: {msg.error()}")
         continue
     
-    # Deserialize data Avro
-    avro_data = msg.value()
-    stock_data = deserialize_avro(avro_data, schema)
+    # Data sudah dalam bentuk yang sesuai dengan schema
+    stock_data = msg.value()
     print(f"Received stock data: {stock_data}")
